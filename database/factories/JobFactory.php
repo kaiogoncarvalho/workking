@@ -19,8 +19,8 @@ $factory->define(
     App\Models\Job::class,
     function (Faker\Generator $faker) {
         return [
-            'title'       => $faker->name,
-            'description' => $faker->email,
+            'title'       => $faker->text,
+            'description' => $faker->text,
             'salary'      => $faker->optional()->randomFloat(2),
             'status'      => $faker->randomElement(['enable', 'disable']),
             'workplace'   => $faker->randomElement(

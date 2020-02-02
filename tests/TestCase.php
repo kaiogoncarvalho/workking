@@ -10,8 +10,6 @@ abstract class TestCase extends LaravelTestCase
 {
     use DatabaseTransactions, DatabaseMigrations;
 
-    private static $migrate = true;
-
     /**
      * Creates the application.
      *
