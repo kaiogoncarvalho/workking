@@ -13,10 +13,12 @@ class JobsTest extends TestCase
      */
     public function testCreate()
     {
+        $admin = factory('App\Models\Admin')->create();
+        $this->be($admin, 'admin');
         $body = factory('App\Models\Job')->make()->toArray();
         $this->json(
             'POST',
-            '/v1/jobs',
+            "/v1/jobs",
             $body
         )->seeStatusCode(Response::HTTP_CREATED);
 
@@ -34,6 +36,8 @@ class JobsTest extends TestCase
      */
     public function testUpdate()
     {
+        $admin = factory('App\Models\Admin')->create();
+        $this->be($admin, 'admin');
         $job = factory('App\Models\Job')->create();
         $body = factory('App\Models\Job')->make()->toArray();
         $this->json(
@@ -108,6 +112,8 @@ class JobsTest extends TestCase
      */
     public function testDelete()
     {
+        $admin = factory('App\Models\Admin')->create();
+        $this->be($admin, 'admin');
         $job = factory('App\Models\Job')->create();
         $this->json(
             'DELETE',
@@ -116,6 +122,25 @@ class JobsTest extends TestCase
             ->notSeeInDatabase(
                 'jobs',
                 ['id' => $job->id, 'deleted_at' => null]
+            );
+    }
+
+    /**
+     * Test Apply a Job
+     * @covers \App\Http\Controllers\JobsController::apply
+     */
+    public function testApply()
+    {
+        $user = factory('App\Models\User')->create();
+        $this->be($user, 'user');
+        $job = factory('App\Models\Job')->create();
+        $this->json(
+            'POST',
+            "/v1/jobs/{$job->id}/apply"
+        )->seeStatusCode(Response::HTTP_OK)
+            ->seeInDatabase(
+                'jobs_applies',
+                ['job_id' => $job->id, 'user_id' => $user->id]
             );
     }
 }
